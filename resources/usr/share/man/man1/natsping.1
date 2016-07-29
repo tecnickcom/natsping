@@ -1,0 +1,25 @@
+.\" Manpage for natsping.
+.TH NATSPING "1" "2016" "natsping" "User Commands"
+.SH NAME
+natsping \- NATS bus ping command.
+.SH DESCRIPTION
+Ping a NATS bus to see if it is alive.
+.SS "Usage:"
+.IP
+natsping [flags]
+natsping [command]
+.SS "Available Commands:"
+.TP
+version
+print this program version
+.SS "Flags:"
+.HP
+\fB\-n\fR, \fB\-\-natsAddress\fR=\fI10\fR: NATS bus Address (nats://ip:port)
+.HP
+\fB\-l\fR, \fB\-\-logLevel\fR=\fI10\fR: Log level: NONE, EMERGENCY, ALERT, CRITICAL, ERROR, WARNING, NOTICE, INFO, DEBUG
+.PP
+Use "natsping [command] \fB\-\-help\fR" for more information about a command.
+.SH AUTHOR
+Nicola Asuni (nicola.asuni@miracl.com)
+.SH COPYRIGHT
+(c) 2016 MIRACL UK LTD
