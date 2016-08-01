@@ -75,7 +75,7 @@ Available Commands:
 
 Flags:
   -n, --natsAddress string     NATS bus Address (nats://ip:port) (default "nats://127.0.0.1:4222")
-  -l, --logLevel      string  Log level: NONE, EMERGENCY, ALERT, CRITICAL, ERROR, WARNING, NOTICE, INFO, DEBUG
+  -l, --logLevel      string  Log level: panic, fatal, error, warning, info, debug
 
 Use "natsping [command] --help" for more information about a command.
 ```
