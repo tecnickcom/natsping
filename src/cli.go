@@ -22,7 +22,7 @@ func cli() (*cobra.Command, error) {
 
 	// overwrites the configuration parameters with the ones specified in the command line (if any)
 	rootCmd.Flags().StringVarP(&appParams.natsAddress, "natsAddress", "n", cfgParams.natsAddress, "NATS bus Address (nats://ip:port)")
-	rootCmd.Flags().StringVarP(&appParams.logLevel, "logLevel", "l", cfgParams.logLevel, "Log level: NONE, EMERGENCY, ALERT, CRITICAL, ERROR, WARNING, NOTICE, INFO, DEBUG")
+	rootCmd.Flags().StringVarP(&appParams.logLevel, "logLevel", "l", cfgParams.logLevel, "Log level: panic, fatal, error, warning, info, debug")
 
 	rootCmd.Use = "natsping"
 	rootCmd.Short = "NATS Bus Ping Command"

@@ -118,21 +118,11 @@ The natsping command exit with the status 0 if the NATS bus is responding, other
 
 ## Logs
 
-This service logs the log messages in the *Stderr* or *Stdout* using the syslog prefixes:
-
-
-| PREFIX                              | LEVEL | DESCRIPTION                                                                            | OUTPUT |
-|:----------------------------------- |:-----:|:-------------------------------------------------------------------------------------- |:------:|
-|<nobr> [EMERGENCY] [natsping] </nobr>|   0   |<nobr> **Emergency**: System is unusable                                         </nobr>| Stderr |
-|<nobr> [ALERT] [natsping]     </nobr>|   1   |<nobr> **Alert**: Should be corrected immediately                                </nobr>| Stderr |
-|<nobr> [CRITICAL] [natsping]  </nobr>|   2   |<nobr> **Critical**: Critical conditions                                         </nobr>| Stderr |
-|<nobr> [ERROR] [natsping]     </nobr>|   3   |<nobr> **Error**: Error conditions                                               </nobr>| Stderr |
-|<nobr> [WARNING] [natsping]   </nobr>|   4   |<nobr> **Warning**: May indicate that an error will occur if action is not taken </nobr>| Stderr |
-|<nobr> [NOTICE] [natsping]    </nobr>|   5   |<nobr> **Notice**: Events that are unusual, but not error conditions             </nobr>| Stderr |
-|<nobr> [INFO] [natsping]      </nobr>|   6   |<nobr> **Informational**: Normal operational messages that require no action     </nobr>| Stderr |
-|<nobr> [DEBUG] [natsping]     </nobr>|   7   |<nobr> **Debug**: Information useful to developers for debugging the application </nobr>| Stderr |
-
-
+This service logs the log messages in json format.
+For example:
+```
+{"level":"debug","msg":"initializing NATS bus","nats":"nats://127.0.0.1:3333","program":"natsping","release":"0","time":"2016-08-01T11:20:06+01:00","timestamp":1470046806839088130,"version":"0.0.0"}
+```
 
 ## Developer(s) Contact
 

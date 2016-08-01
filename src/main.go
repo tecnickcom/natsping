@@ -2,13 +2,21 @@
 // NATS Bus Ping Command
 package main
 
+import (
+	log "github.com/Sirupsen/logrus"
+)
+
 func main() {
 	rootCmd, err := cli()
 	if err != nil {
-		Log(CRITICAL, "unable to start the command: %v", err)
+		log.WithFields(log.Fields{
+			"error": err,
+		}).Fatal("unable to start the command")
 	}
 	// execute the root command and log errors (if any)
 	if err = rootCmd.Execute(); err != nil {
-		Log(CRITICAL, "unable to start the command: %v", err)
+		log.WithFields(log.Fields{
+			"error": err,
+		}).Fatal("unable to start the command")
 	}
 }
