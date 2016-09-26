@@ -93,6 +93,7 @@ CONSUL_DOCKER_IMAGE_NAME=consul_$(OWNER)_$(PROJECT)$(DOCKERSUFFIX)
 # docker image name for NATS (used during testing)
 NATS_DOCKER_IMAGE_NAME=nats_$(OWNER)_$(PROJECT)$(DOCKERSUFFIX)
 
+
 # --- MAKE TARGETS ---
 
 # Display general help about this command
@@ -216,8 +217,6 @@ deps:
 # Install this application
 install: uninstall
 	mkdir -p $(PATHINSTBIN)
-	#cp -r ./resources/${BINPATH}* $(PATHINSTBIN)
-	#strip --strip-unneeded ./target/${BINPATH}*
 	cp -r ./target/${BINPATH}* $(PATHINSTBIN)
 	find $(PATHINSTBIN) -type d -exec chmod 755 {} \;
 	find $(PATHINSTBIN) -type f -exec chmod 755 {} \;
@@ -262,7 +261,12 @@ nuke:
 
 # Compile the application
 build: deps
-	GOPATH=$(GOPATH) CGO_ENABLED=0 go build -ldflags '-extldflags "-static" -s -X main.ProgramVersion=${VERSION} -X main.ProgramRelease=${RELEASE}' -o ./target/${BINPATH}$(PROJECT) ./src
+	GOPATH=$(GOPATH) \
+	CGO_ENABLED=0 \
+	go build -ldflags '-extldflags "-static" -w -s -X main.ProgramVersion=${VERSION} -X main.ProgramRelease=${RELEASE}' -o ./target/${BINPATH}$(PROJECT) ./src
+ifneq (${UPXENABLED},)
+	upx --brute ./target/${BINPATH}$(PROJECT)
+endif
 
 # Cross-compile the application for several platforms
 crossbuild: deps
@@ -271,7 +275,7 @@ crossbuild: deps
 		$(eval GOOS = $(word 1,$(subst /, ,$(TARGET)))) \
 		$(eval GOARCH = $(word 2,$(subst /, ,$(TARGET)))) \
 		$(shell which mkdir) -p target/$(TARGET) && \
-		GOOS=${GOOS} GOARCH=${GOARCH} GOPATH=$(GOPATH) go build -ldflags '-extldflags "-static" -s -X main.ProgramVersion=${VERSION}' -o ./target/${GOOS}/${GOARCH}/$(PROJECT) ./src \
+		GOOS=${GOOS} GOARCH=${GOARCH} GOPATH=$(GOPATH) go build -ldflags '-extldflags "-static" -w -s -X main.ProgramVersion=${VERSION}' -o ./target/${GOOS}/${GOARCH}/$(PROJECT) ./src \
 		|| echo $(TARGET) >> target/ccfailures.txt ; \
 	)
 ifneq ($(strip $(cat target/ccfailures.txt)),)
