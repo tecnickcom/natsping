@@ -45,6 +45,7 @@ func (f *logJSONFormatter) Format(entry *log.Entry) ([]byte, error) {
 		timestampFormat = log.DefaultTimestampFormat
 	}
 
+	data["hostname"], _ = os.Hostname()
 	data["program"] = ProgramName
 	data["version"] = ProgramVersion
 	data["release"] = ProgramRelease
@@ -62,7 +63,7 @@ func (f *logJSONFormatter) Format(entry *log.Entry) ([]byte, error) {
 
 // prefixFieldClashes avoid overwrite default fields
 func prefixFieldClashes(data log.Fields) {
-	fields := [...]string{"program", "version", "release", "time", "timestamp", "msg", "level"}
+	fields := [...]string{"hostname", "program", "version", "release", "time", "timestamp", "msg", "level"}
 	for i := range fields {
 		if val, ok := data[fields[i]]; ok {
 			data["fields."+fields[i]] = val
