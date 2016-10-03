@@ -394,6 +394,6 @@ dockertest:
 	@exit `cat target/project_docker_container.exit`
 
 # build everything inside a Docker container
-dbuild: deps
+dbuild:
 	@mkdir -p target
 	./dockerbuild.sh
