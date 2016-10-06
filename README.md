@@ -32,25 +32,29 @@ All the artifacts and reports produced using this Makefile are stored in the *ta
 All the packages listed in the *resources/DockerDev/Dockerfile* file are required in order to build and test all the library options in the current environment. Alternatively, everything can be built inside a [Docker](https://www.docker.com) container using the command "make dbuild".
 
 To see all available options:
-
-    make help
+```
+make help
+```
 
 To build the project inside a Docker container (requires Docker):
-
-    make dbuild
+```
+make dbuild
+```
 
 The base Docker building environment is defined in the following Dockerfile:
-
-    resources/DockerDev/Dockerfile
+```
+resources/DockerDev/Dockerfile
+```
 
 To execute all the default test builds and generate reports in the current environment:
-
-    make qa
+```
+make qa
+```
 
 To format the code (please use this command before submitting any pull request):
-
-    make format
-
+```
+make format
+```
 
 ## Useful Docker commands
 
@@ -86,7 +90,7 @@ docker rm $(docker ps -a -q)
 
 To delete all images
 ```
-    docker rmi $(docker images -q)
+docker rmi $(docker images -q)
 ```
 
 
@@ -142,13 +146,13 @@ The equivalent environment variables are:
 The natsping command exit with the status 0 if the NATS bus is responding, otherwise it generates an error log message and exit with 1.
 
 
-
 ## Logs
 
 This service logs the log messages in json format.
 For example:
 ```
-{"level":"debug","msg":"initializing NATS bus","nats":"nats://127.0.0.1:3333","program":"natsping","release":"0","time":"2016-08-01T11:20:06+01:00","timestamp":1470046806839088130,"version":"0.0.0"}
+{"datetime":"2016-10-06T15:00:39Z","hostname":"nickxm","level":"debug","msg":"initializing NATS bus","nats":"nats://127.0.0.1:3333","program":"natsping","release":"1","timestamp":1475766039219189166,"version":"1.2.1"}
+
 ```
 
 ## Developer(s) Contact
