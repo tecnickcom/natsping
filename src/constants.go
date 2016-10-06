@@ -3,9 +3,6 @@ package main
 // ProgramName contains this program name
 const ProgramName = "natsping"
 
-// ProgramID contains this program ID
-const ProgramID = "natsping"
-
 // ProgramVersion contains this program version
 // This is automatically populated by the Makefile using the value from the VERSION file
 var ProgramVersion = "0.0.0"
