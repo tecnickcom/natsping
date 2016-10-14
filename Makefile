@@ -410,6 +410,7 @@ buildall: build qa rpm deb
 # build everything inside a Docker container
 dbuild:
 	@mkdir -p target
-	@echo 0 > target/buildall.exit
-	VENDOR=$(VENDOR) PROJECT=$(PROJECT) ./dockerbuild.sh
-	@exit `cat target/buildall.exit`
+	@rm -rf target/*
+	@echo 0 > target/make.exit
+	VENDOR=$(VENDOR) PROJECT=$(PROJECT) MAKETARGET='$(MAKETARGET)' ./dockerbuild.sh
+	@exit `cat target/make.exit`
