@@ -15,7 +15,7 @@ var emptyParamCases = []string{
 
 func TestCliEmptyParamError(t *testing.T) {
 	for _, param := range emptyParamCases {
-		os.Args = []string{"natsping", param}
+		os.Args = []string{ProgramName, param}
 		cmd, err := cli()
 		if err != nil {
 			t.Error(fmt.Errorf("An error wasn't expected: %v", err))
@@ -38,7 +38,7 @@ func TestCliEmptyParamError(t *testing.T) {
 }
 
 func TestCliNoConfigError(t *testing.T) {
-	os.Args = []string{"natsping", "--natsAddress=nats://127.0.0.1:3334"}
+	os.Args = []string{ProgramName, "--natsAddress=nats://127.0.0.1:3334"}
 	cmd, err := cli()
 	if err != nil {
 		t.Error(fmt.Errorf("An error wasn't expected: %v", err))

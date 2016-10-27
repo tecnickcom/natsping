@@ -2,11 +2,17 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 )
 
 func cli() (*cobra.Command, error) {
+
+	// parse the configDir argument
+	cfgCmd := new(cobra.Command)
+	cfgCmd.Flags().StringVarP(&configDir, "configDir", "c", "", "Configuration directory to be added on top of the search list")
+	cfgCmd.ParseFlags(os.Args)
 
 	// configuration parameters
 	cfgParams, err := getConfigParams()
@@ -14,15 +20,12 @@ func cli() (*cobra.Command, error) {
 		return nil, err
 	}
 
-	// application parameters
-	appParams := new(params)
-
-	// set the root command
-	rootCmd := new(cobra.Command)
-
 	// overwrites the configuration parameters with the ones specified in the command line (if any)
-	rootCmd.Flags().StringVarP(&appParams.natsAddress, "natsAddress", "n", cfgParams.natsAddress, "NATS bus Address (nats://ip:port)")
+	appParams = &cfgParams
+	rootCmd := new(cobra.Command)
+	rootCmd.Flags().StringVarP(&configDir, "configDir", "c", "", "Configuration directory to be added on top of the search list")
 	rootCmd.Flags().StringVarP(&appParams.logLevel, "logLevel", "l", cfgParams.logLevel, "Log level: panic, fatal, error, warning, info, debug")
+	rootCmd.Flags().StringVarP(&appParams.natsAddress, "natsAddress", "n", cfgParams.natsAddress, "NATS bus Address (nats://ip:port)")
 
 	rootCmd.Use = "natsping"
 	rootCmd.Short = "NATS Bus Ping Command"

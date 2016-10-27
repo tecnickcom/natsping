@@ -112,15 +112,16 @@ Available Commands:
   version     print this program version
 
 Flags:
-  -n, --natsAddress string     NATS bus Address (nats://ip:port) (default "nats://127.0.0.1:4222")
-  -l, --logLevel      string  Log level: panic, fatal, error, warning, info, debug
+  -c, --configDir   string  Configuration directory to be added on top of the search list
+  -l, --logLevel     string  Log level: panic, fatal, error, warning, info, debug
+  -n, --natsAddress  string  NATS bus Address (nats://ip:port) (default "nats://127.0.0.1:4222")
 
 Use "natsping [command] --help" for more information about a command.
 ```
 
 ## How it works
 
-The service can be started by issuing the following command (*with the right parameters*):
+The program can be started by issuing the following command (*with the right parameters*):
 
 ```
 natsping --natsAddress="nats://127.0.0.1:4222 --logLevel=INFO"
@@ -134,7 +135,7 @@ The configuration files can be stored in the current directory or in any of the 
 * /etc/natsping/
 
 
-This service also support secure remote configuration via [Consul](https://www.consul.io/) or [Etcd](https://github.com/coreos/etcd).  
+This program also support secure remote configuration via [Consul](https://www.consul.io/) or [Etcd](https://github.com/coreos/etcd).  
 The remote configuration server can be defined either in the local configuration file using the following parameters, or with environment variables:
 
 * **remoteConfigProvider** : remote configuration source ("consul", "etcd");
@@ -155,7 +156,7 @@ The natsping command exit with the status 0 if the NATS bus is responding, other
 
 ## Logs
 
-This service logs the log messages in json format.
+This program logs the log messages in json format.
 For example:
 ```
 {"datetime":"2016-10-06T15:00:39Z","hostname":"nickxm","level":"debug","msg":"initializing NATS bus","nats":"nats://127.0.0.1:3333","program":"natsping","release":"1","timestamp":1475766039219189166,"version":"1.2.1"}
