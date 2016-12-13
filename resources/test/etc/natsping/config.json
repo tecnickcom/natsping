@@ -1,8 +1,12 @@
 {
-    "remoteConfigProvider" : "",
-    "remoteConfigEndpoint" : "",
-    "remoteConfigPath" : "",
-    "remoteConfigSecretKeyring" : "",
-    "natsAddress" : "nats://127.0.0.1:4222",
-    "logLevel" : "debug"
+  "remoteConfigProvider" : "",
+  "remoteConfigEndpoint" : "",
+  "remoteConfigPath" : "",
+  "remoteConfigSecretKeyring" : "",
+  "natsAddress" : "nats://127.0.0.1:4222",
+  "log": {
+    "level": "DEBUG",
+    "network": "",
+    "address": ""
+  }
 }
