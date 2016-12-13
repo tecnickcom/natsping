@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/spf13/viper"
 	_ "github.com/spf13/viper/remote"
 )
@@ -23,8 +22,8 @@ func (rcfg remoteConfigParams) isEmpty() bool {
 
 // params struct contains the application parameters
 type params struct {
-	natsAddress string // NATS bus Address (nats://ip:port)
-	logLevel    string // Log level: NONE, EMERGENCY, ALERT, CRITICAL, ERROR, WARNING, NOTICE, INFO, DEBUG
+	log         *LogData // Log level: EMERGENCY, ALERT, CRITICAL, ERROR, WARNING, NOTICE, INFO, DEBUG.
+	natsAddress string   // NATS bus Address (nats://ip:port)
 }
 
 var configDir string
@@ -48,8 +47,12 @@ func getLocalConfigParams() (cfg params, rcfg remoteConfigParams) {
 	viper.SetDefault("remoteConfigSecretKeyring", RemoteConfigSecretKeyring)
 
 	// set default configuration values
+
+	viper.SetDefault("log.level", LogLevel)
+	viper.SetDefault("log.network", LogNetwork)
+	viper.SetDefault("log.address", LogAddress)
+
 	viper.SetDefault("natsAddress", NatsAddress)
-	viper.SetDefault("logLevel", LogLevel)
 
 	// name of the configuration file without extension
 	viper.SetConfigName("config")
@@ -70,10 +73,7 @@ func getLocalConfigParams() (cfg params, rcfg remoteConfigParams) {
 	viper.ReadInConfig()
 
 	// read configuration parameters
-	cfg = params{
-		natsAddress: viper.GetString("natsAddress"),
-		logLevel:    viper.GetString("logLevel"),
-	}
+	cfg = getViperParams()
 
 	// support environment variables for the remote configuration
 	viper.AutomaticEnv()
@@ -103,8 +103,12 @@ func getRemoteConfigParams(cfg params, rcfg remoteConfigParams) (params, error) 
 	viper.Reset()
 
 	// set default configuration values
+
+	viper.SetDefault("log.level", cfg.log.Level)
+	viper.SetDefault("log.network", cfg.log.Network)
+	viper.SetDefault("log.address", cfg.log.Address)
+
 	viper.SetDefault("natsAddress", cfg.natsAddress)
-	viper.SetDefault("logLevel", cfg.logLevel)
 
 	// configuration type
 	viper.SetConfigType("json")
@@ -125,25 +129,37 @@ func getRemoteConfigParams(cfg params, rcfg remoteConfigParams) (params, error) 
 	}
 
 	// read configuration parameters
+	return getViperParams(), nil
+}
+
+// getViperParams reads the config params via Viper
+func getViperParams() params {
 	return params{
-			natsAddress: viper.GetString("natsAddress"),
-			logLevel:    viper.GetString("logLevel"),
+
+		log: &LogData{
+			Level:   viper.GetString("log.level"),
+			Network: viper.GetString("log.network"),
+			Address: viper.GetString("log.address"),
 		},
-		nil
+
+		natsAddress: viper.GetString("natsAddress"),
+	}
 }
 
 // checkParams cheks if the configuration parameters are valid
-func checkParams(appParams *params) error {
-	if appParams.natsAddress == "" {
+func checkParams(prm *params) error {
+	// Log
+	if prm.log.Level == "" {
+		return errors.New("log Level is empty")
+	}
+	err := prm.log.setLog()
+	if err != nil {
+		return err
+	}
+
+	if prm.natsAddress == "" {
 		return errors.New("natsAddress is empty")
 	}
-	if appParams.logLevel == "" {
-		return errors.New("logLevel is empty")
-	}
-	levelCode, err := log.ParseLevel(appParams.logLevel)
-	if err != nil {
-		return errors.New("The logLevel must be one of the following: panic, fatal, error, warning, info, debug")
-	}
-	log.SetLevel(levelCode)
+
 	return nil
 }

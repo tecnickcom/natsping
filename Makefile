@@ -24,6 +24,9 @@ OWNER=MIRACL
 # Project vendor
 VENDOR=miracl
 
+# Project name
+PROJECT=natsping
+
 # Project version
 VERSION=$(shell cat VERSION)
 
@@ -199,7 +202,7 @@ misspell:
 # AST scanner
 astscan:
 	@mkdir -p target/report
-	GOPATH=$(GOPATH) gas --nosec=true ./src/*.go | tee target/report/astscan.txt ; test $${PIPESTATUS[0]} -eq 0
+	GOPATH=$(GOPATH) gas ./src/*.go | tee target/report/astscan.txt ; test $${PIPESTATUS[0]} -eq 0
 
 # Generate source docs
 docs:
@@ -303,7 +306,7 @@ rpm:
 	rpmbuild \
 	--define "_topdir $(PATHRPMPKG)" \
 	--define "_vendor $(VENDOR)" \
-	--define "_owner $(VENDOR)" \
+	--define "_owner $(OWNER)" \
 	--define "_project $(PROJECT)" \
 	--define "_package $(PKGNAME)" \
 	--define "_version $(VERSION)" \
@@ -386,7 +389,7 @@ dockertest:
 	docker inspect --format='{{(index (index .NetworkSettings.Ports "4222/tcp") 0).HostPort}}' `cat target/nats_docker_container.id` > target/nats_docker_container.port
 	docker inspect --format='{{(index (index .NetworkSettings.Ports "8500/tcp") 0).HostPort}}' `cat target/consul_docker_container.id` > target/consul_docker_container.port
 	# push Consul configuration
-	curl -X PUT -d '{"natsAddress":"nats://127.0.0.1:'`cat target/nats_docker_container.port`'"}' http://127.0.0.1:`cat target/consul_docker_container.port`/v1/kv/config/natsping
+	curl -X PUT -d '{"natsAddress" : "nats://127.0.0.1:4222","log": {"level": "DEBUG","network": "","address": ""}}' http://127.0.0.1:`cat target/consul_docker_container.port`/v1/kv/config/natsping
 	# Start natsping container
 	docker run --net="host" --tty=true \
 	--env="NATSPING_REMOTECONFIGPROVIDER=consul" \

@@ -8,27 +8,61 @@ import (
 	"github.com/spf13/viper"
 )
 
+func getTestCfgParams() *params {
+	return &params{
+		log: &LogData{
+			Level:   "INFO",
+			Network: "",
+			Address: "",
+		},
+		natsAddress: "nats://127.0.0.1:4222",
+	}
+}
+
+func TestCheckParams(t *testing.T) {
+	err := checkParams(getTestCfgParams())
+	if err != nil {
+		t.Error(fmt.Errorf("No errors are expected: %v", err))
+	}
+}
+
+func TestCheckParamsErrorsLogLevelEmpty(t *testing.T) {
+	cfg := getTestCfgParams()
+	cfg.log.Level = ""
+	err := checkParams(cfg)
+	if err == nil {
+		t.Error(fmt.Errorf("An error was expected because logLevel is empty"))
+	}
+}
+
+func TestCheckParamsErrorsLogLevelInvalid(t *testing.T) {
+	cfg := getTestCfgParams()
+	cfg.log.Level = "INVALID"
+	err := checkParams(cfg)
+	if err == nil {
+		t.Error(fmt.Errorf("An error was expected because logLevel is invalid"))
+	}
+}
+
+func TestCheckParamsErrorsNatsAddress(t *testing.T) {
+	cfg := getTestCfgParams()
+	cfg.natsAddress = ""
+	err := checkParams(cfg)
+	if err == nil {
+		t.Error(fmt.Errorf("An error was expected because natsAddress is empty"))
+	}
+}
+
 func TestGetConfigParams(t *testing.T) {
-
-	// load a specific config file just for testing
-	oldCfg := ConfigPath
-	viper.Reset()
-	ConfigPath[0] = "../resources/test/etc/natsping/"
-	ConfigPath[1] = "wrong/path/1/"
-	ConfigPath[2] = "wrong/path/2/"
-	ConfigPath[3] = "wrong/path/3/"
-	ConfigPath[4] = "wrong/path/4/"
-	defer func() { ConfigPath = oldCfg }()
-
 	prm, err := getConfigParams()
 	if err != nil {
 		t.Error(fmt.Errorf("An error was not expected: %v", err))
 	}
 	if prm.natsAddress != "nats://127.0.0.1:4222" {
-		t.Error(fmt.Errorf("Found different natsAddress than expected"))
+		t.Error(fmt.Errorf("Found different server address than expected, found %s", prm.natsAddress))
 	}
-	if prm.logLevel != "debug" {
-		t.Error(fmt.Errorf("Found different logLevel than expected"))
+	if prm.log.Level != "DEBUG" {
+		t.Error(fmt.Errorf("Found different logLevel than expected, found %s", prm.log.Level))
 	}
 }
 
@@ -41,35 +75,25 @@ func TestGetLocalConfigParams(t *testing.T) {
 	os.Setenv("NATSPING_REMOTECONFIGPATH", "/config/natsping")
 	os.Setenv("NATSPING_REMOTECONFIGSECRETKEYRING", "")
 
-	// load a specific config file just for testing
-	oldCfg := ConfigPath
-	viper.Reset()
-	ConfigPath[0] = "../resources/test/etc/natsping/"
-	ConfigPath[1] = "wrong/path/1/"
-	ConfigPath[2] = "wrong/path/2/"
-	ConfigPath[3] = "wrong/path/3/"
-	ConfigPath[4] = "wrong/path/4/"
-	defer func() { ConfigPath = oldCfg }()
-
 	prm, rprm := getLocalConfigParams()
 
 	if prm.natsAddress != "nats://127.0.0.1:4222" {
-		t.Error(fmt.Errorf("Found different natsAddress than expected"))
+		t.Error(fmt.Errorf("Found different server address than expected, found %s", prm.natsAddress))
 	}
-	if prm.logLevel != "debug" {
-		t.Error(fmt.Errorf("Found different logLevel than expected"))
+	if prm.log.Level != "DEBUG" {
+		t.Error(fmt.Errorf("Found different logLevel than expected, found %s", prm.log.Level))
 	}
 	if rprm.remoteConfigProvider != "consul" {
-		t.Error(fmt.Errorf("Found different remoteConfigProvider than expected"))
+		t.Error(fmt.Errorf("Found different remoteConfigProvider than expected, found %s", rprm.remoteConfigProvider))
 	}
 	if rprm.remoteConfigEndpoint != "127.0.0.1:98765" {
-		t.Error(fmt.Errorf("Found different remoteConfigEndpoint than expected"))
+		t.Error(fmt.Errorf("Found different remoteConfigEndpoint than expected, found %s", rprm.remoteConfigEndpoint))
 	}
 	if rprm.remoteConfigPath != "/config/natsping" {
-		t.Error(fmt.Errorf("Found different remoteConfigPath than expected"))
+		t.Error(fmt.Errorf("Found different remoteConfigPath than expected, found %s", rprm.remoteConfigPath))
 	}
 	if rprm.remoteConfigSecretKeyring != "" {
-		t.Error(fmt.Errorf("Found different remoteConfigSecretKeyring than expected"))
+		t.Error(fmt.Errorf("Found different remoteConfigSecretKeyring than expected, found %s", rprm.remoteConfigSecretKeyring))
 	}
 
 	_, err := getRemoteConfigParams(prm, rprm)
@@ -103,22 +127,44 @@ func TestGetConfigParamsRemote(t *testing.T) {
 	// load a specific config file just for testing
 	oldCfg := ConfigPath
 	viper.Reset()
-	ConfigPath[0] = "wrong/path/0/"
-	ConfigPath[1] = "wrong/path/1/"
-	ConfigPath[2] = "wrong/path/2/"
-	ConfigPath[3] = "wrong/path/3/"
-	ConfigPath[4] = "wrong/path/4/"
+	for k := range ConfigPath {
+		ConfigPath[k] = "wrong/path/"
+	}
 	defer func() { ConfigPath = oldCfg }()
 
 	prm, err := getConfigParams()
 	if err != nil {
-		t.Error(fmt.Errorf("Unexpected error: %v", err))
+		t.Error(fmt.Errorf("An error was not expected: %v", err))
 	}
 	if prm.natsAddress != "nats://127.0.0.1:4222" {
-		t.Error(fmt.Errorf("Found different natsAddress than expected"))
+		t.Error(fmt.Errorf("Found different server address than expected, found %s", prm.natsAddress))
 	}
-	if prm.logLevel != "debug" {
-		t.Error(fmt.Errorf("Found different logLevel than expected"))
+	if prm.log.Level != "debug" {
+		t.Error(fmt.Errorf("Found different logLevel than expected, found %s", prm.log.Level))
+	}
+}
+
+func TestCliWrongConfigError(t *testing.T) {
+
+	// test environment variables
+	defer unsetRemoteConfigEnv()
+	os.Setenv("NATSPING_REMOTECONFIGPROVIDER", "consul")
+	os.Setenv("NATSPING_REMOTECONFIGENDPOINT", "127.0.0.1:999999")
+	os.Setenv("NATSPING_REMOTECONFIGPATH", "/config/wrong")
+	os.Setenv("NATSPING_REMOTECONFIGSECRETKEYRING", "")
+
+	// load a specific config file just for testing
+	oldCfg := ConfigPath
+	viper.Reset()
+	for k := range ConfigPath {
+		ConfigPath[k] = "wrong/path/"
+	}
+	defer func() { ConfigPath = oldCfg }()
+
+	_, err := cli()
+	if err == nil {
+		t.Error(fmt.Errorf("An error was expected"))
+		return
 	}
 }
 
