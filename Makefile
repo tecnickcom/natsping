@@ -398,8 +398,6 @@ dockertest:
 	--env="NATSPING_REMOTECONFIGSECRETKEYRING=" \
 	${VENDOR}/${PROJECT}$(DOCKERSUFFIX):latest > target/project_docker_container.run || true
 	# remove the testing container
-	docker stop `cat target/project_docker_container.id` 2> /dev/null || true
-	docker rm `cat target/project_docker_container.id` 2> /dev/null || true
 	docker stop `cat target/consul_docker_container.id` 2> /dev/null || true
 	docker rm `cat target/consul_docker_container.id` 2> /dev/null || true
 	docker stop `cat target/nats_docker_container.id` 2> /dev/null || true
