@@ -389,7 +389,7 @@ dockertest:
 	docker inspect --format='{{(index (index .NetworkSettings.Ports "4222/tcp") 0).HostPort}}' `cat target/nats_docker_container.id` > target/nats_docker_container.port
 	docker inspect --format='{{(index (index .NetworkSettings.Ports "8500/tcp") 0).HostPort}}' `cat target/consul_docker_container.id` > target/consul_docker_container.port
 	# push Consul configuration
-	curl -X PUT -d '{"natsAddress" : "nats://127.0.0.1:4222","log": {"level": "DEBUG","network": "","address": ""}}' http://127.0.0.1:`cat target/consul_docker_container.port`/v1/kv/config/natsping
+	curl -X PUT -d '{"natsAddress":"nats://127.0.0.1:'`cat target/nats_docker_container.port`'","log": {"level": "DEBUG","network": "","address": ""}}' http://127.0.0.1:`cat target/consul_docker_container.port`/v1/kv/config/natsping
 	# Start natsping container
 	docker run --net="host" --tty=true \
 	--env="NATSPING_REMOTECONFIGPROVIDER=consul" \
@@ -397,6 +397,7 @@ dockertest:
 	--env="NATSPING_REMOTECONFIGPATH=/config/natsping" \
 	--env="NATSPING_REMOTECONFIGSECRETKEYRING=" \
 	${VENDOR}/${PROJECT}$(DOCKERSUFFIX):latest > target/project_docker_container.run || true
+	sleep 1
 	# remove the testing container
 	docker stop `cat target/consul_docker_container.id` 2> /dev/null || true
 	docker rm `cat target/consul_docker_container.id` 2> /dev/null || true
