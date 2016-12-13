@@ -396,9 +396,7 @@ dockertest:
 	--env="NATSPING_REMOTECONFIGENDPOINT=127.0.0.1:`cat target/consul_docker_container.port`" \
 	--env="NATSPING_REMOTECONFIGPATH=/config/natsping" \
 	--env="NATSPING_REMOTECONFIGSECRETKEYRING=" \
-	${VENDOR}/${PROJECT}$(DOCKERSUFFIX):latest > target/project_docker_container.id ; \
-	echo $$? > target/project_docker_container.exit \
-	|| true
+	${VENDOR}/${PROJECT}$(DOCKERSUFFIX):latest > target/project_docker_container.run || true
 	# remove the testing container
 	docker stop `cat target/project_docker_container.id` 2> /dev/null || true
 	docker rm `cat target/project_docker_container.id` 2> /dev/null || true
@@ -406,7 +404,7 @@ dockertest:
 	docker rm `cat target/consul_docker_container.id` 2> /dev/null || true
 	docker stop `cat target/nats_docker_container.id` 2> /dev/null || true
 	docker rm `cat target/nats_docker_container.id` 2> /dev/null || true
-	@exit `cat target/project_docker_container.exit`
+	@exit `grep -ic "error" target/project_docker_container.run`
 
 # Full build and test sequence
 # You may want to change this and remove the options you don't need
