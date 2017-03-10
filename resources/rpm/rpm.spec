@@ -21,7 +21,7 @@ Provides:  %{gh_project} = %{version}
 Ping a NATS bus to see if it is alive.
 
 %build
-(cd %{_current_directory} && make build)
+#(cd %{_current_directory} && make build)
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -32,9 +32,9 @@ rm -rf $RPM_BUILD_ROOT
 (cd %{_current_directory} && make clean)
 
 %files
-%attr(-,root,root) %{_binpath}
+%attr(-,root,root) %{_binpath}/%{_project}
 %attr(-,root,root) %{_docpath}
-%attr(-,root,root) %{_manpath}
+%attr(-,root,root) %{_manpath}/%{_project}.1.gz
 %docdir %{_docpath}
 %docdir %{_manpath}
 %config(noreplace) %{_configpath}*
