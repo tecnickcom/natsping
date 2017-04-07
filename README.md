@@ -13,7 +13,7 @@
 
 * **category**:    Tool
 * **author**:      Nicola Asuni <nicola.asuni@miracl.com>
-* **copyright**:   2016 MIRACL UK LTD
+* **copyright**:   2016-2017 MIRACL UK LTD
 * **license**:     ASL 2.0 - http://www.apache.org/licenses/LICENSE-2.0
 * **link**:        https://github.com/miracl/natsping
 
@@ -23,6 +23,14 @@
 
 This command-line program allows to ping a [NATS](http://nats.io) bus to see if it is alive.
 
+
+## Requirements
+
+An additional Python program is used to check the validity of the JSON configuration files against a JSON schema:
+
+```
+sudo pip install json-spec 
+```
 
 ## Quick Start
 

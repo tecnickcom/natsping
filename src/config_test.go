@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"reflect"
 	"testing"
 
 	"github.com/spf13/viper"
@@ -60,16 +61,16 @@ func TestGetConfigParams(t *testing.T) {
 func TestGetLocalConfigParams(t *testing.T) {
 
 	// test environment variables
-	defer unsetRemoteConfigEnv()
-	os.Setenv("NATSPING_REMOTECONFIGPROVIDER", "consul")
-	os.Setenv("NATSPING_REMOTECONFIGENDPOINT", "127.0.0.1:98765")
-	os.Setenv("NATSPING_REMOTECONFIGPATH", "/config/natsping")
-	os.Setenv("NATSPING_REMOTECONFIGSECRETKEYRING", "")
+	defer unsetRemoteConfigEnv(t)
+	setRemoteConfigEnv(t, []string{"consul", "127.0.0.1:98765", "/config/natsping", ""})
 
-	prm, rprm := getLocalConfigParams()
+	prm, rprm, err := getLocalConfigParams()
+	if err != nil {
+		t.Error(fmt.Errorf("An error was not expected: %v", err))
+	}
 
 	if prm.natsAddress != "nats://127.0.0.1:4222" {
-		t.Error(fmt.Errorf("Found different server address than expected, found %s", prm.natsAddress))
+		t.Error(fmt.Errorf("Found different nats address than expected, found %s", prm.natsAddress))
 	}
 	if prm.log.Level != "DEBUG" {
 		t.Error(fmt.Errorf("Found different logLevel than expected, found %s", prm.log.Level))
@@ -87,7 +88,7 @@ func TestGetLocalConfigParams(t *testing.T) {
 		t.Error(fmt.Errorf("Found different remoteConfigSecretKeyring than expected, found %s", rprm.remoteConfigSecretKeyring))
 	}
 
-	_, err := getRemoteConfigParams(prm, rprm)
+	_, err = getRemoteConfigParams(prm, rprm)
 	if err == nil {
 		t.Error(fmt.Errorf("A remote configuration error was expected"))
 	}
@@ -109,11 +110,8 @@ func TestGetConfigParamsRemote(t *testing.T) {
 	}
 
 	// test environment variables
-	defer unsetRemoteConfigEnv()
-	os.Setenv("NATSPING_REMOTECONFIGPROVIDER", "consul")
-	os.Setenv("NATSPING_REMOTECONFIGENDPOINT", "127.0.0.1:8500")
-	os.Setenv("NATSPING_REMOTECONFIGPATH", "/config/natsping")
-	os.Setenv("NATSPING_REMOTECONFIGSECRETKEYRING", "")
+	defer unsetRemoteConfigEnv(t)
+	setRemoteConfigEnv(t, []string{"consul", "127.0.0.1:8500", "/config/natsping", ""})
 
 	// load a specific config file just for testing
 	oldCfg := ConfigPath
@@ -128,7 +126,7 @@ func TestGetConfigParamsRemote(t *testing.T) {
 		t.Error(fmt.Errorf("An error was not expected: %v", err))
 	}
 	if prm.natsAddress != "nats://127.0.0.1:4222" {
-		t.Error(fmt.Errorf("Found different server address than expected, found %s", prm.natsAddress))
+		t.Error(fmt.Errorf("Found different nats address than expected, found %s", prm.natsAddress))
 	}
 	if prm.log.Level != "debug" {
 		t.Error(fmt.Errorf("Found different logLevel than expected, found %s", prm.log.Level))
@@ -138,11 +136,8 @@ func TestGetConfigParamsRemote(t *testing.T) {
 func TestCliWrongConfigError(t *testing.T) {
 
 	// test environment variables
-	defer unsetRemoteConfigEnv()
-	os.Setenv("NATSPING_REMOTECONFIGPROVIDER", "consul")
-	os.Setenv("NATSPING_REMOTECONFIGENDPOINT", "127.0.0.1:999999")
-	os.Setenv("NATSPING_REMOTECONFIGPATH", "/config/wrong")
-	os.Setenv("NATSPING_REMOTECONFIGSECRETKEYRING", "")
+	defer unsetRemoteConfigEnv(t)
+	setRemoteConfigEnv(t, []string{"consul", "127.0.0.1:999999", "/config/wrong", ""})
 
 	// load a specific config file just for testing
 	oldCfg := ConfigPath
@@ -152,17 +147,41 @@ func TestCliWrongConfigError(t *testing.T) {
 	}
 	defer func() { ConfigPath = oldCfg }()
 
-	_, err := cli()
-	if err == nil {
-		t.Error(fmt.Errorf("An error was expected"))
+	cmd, err := cli()
+	if err != nil {
+		t.Error(fmt.Errorf("Unexpected error: %v", err))
 		return
+	}
+	if cmdtype := reflect.TypeOf(cmd).String(); cmdtype != "*cobra.Command" {
+		t.Error(fmt.Errorf("The expected type is '*cobra.Command', found: '%s'", cmdtype))
+		return
+	}
+
+	old := os.Stderr // keep backup of the real stdout
+	defer func() { os.Stderr = old }()
+	os.Stderr = nil
+
+	// execute the main function
+	if err := cmd.Execute(); err == nil {
+		t.Error(fmt.Errorf("An error was expected"))
 	}
 }
 
-// unsetRemoteConfigEnv clear the environmental variables used to set the remote configuration
-func unsetRemoteConfigEnv() {
-	os.Setenv("NATSPING_REMOTECONFIGPROVIDER", "")
-	os.Setenv("NATSPING_REMOTECONFIGENDPOINT", "")
-	os.Setenv("NATSPING_REMOTECONFIGPATH", "")
-	os.Setenv("NATSPING_REMOTECONFIGSECRETKEYRING", "")
+func unsetRemoteConfigEnv(t *testing.T) {
+	setRemoteConfigEnv(t, []string{"", "", "", ""})
+}
+
+func setRemoteConfigEnv(t *testing.T, val []string) {
+	envVar := []string{
+		"NATSPING_REMOTECONFIGPROVIDER",
+		"NATSPING_REMOTECONFIGENDPOINT",
+		"NATSPING_REMOTECONFIGPATH",
+		"NATSPING_REMOTECONFIGSECRETKEYRING",
+	}
+	for i, ev := range envVar {
+		err := os.Setenv(ev, val[i])
+		if err != nil {
+			t.Error(fmt.Errorf("Unexpected error: %v", err))
+		}
+	}
 }
