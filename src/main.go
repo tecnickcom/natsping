@@ -1,5 +1,5 @@
-// Copyright (c) 2016 MIRACL UK LTD
-// NATS Bus Ping Command
+// Copyright (c) 2016-2017 MIRACL UK LTD
+// NatsPing for MAAS-SSO
 package main
 
 import (
@@ -11,12 +11,12 @@ func main() {
 	if err != nil {
 		log.WithFields(log.Fields{
 			"error": err,
-		}).Fatal("unable to start the command")
+		}).Fatal("UNABLE TO START THE PROGRAM")
 	}
 	// execute the root command and log errors (if any)
 	if err = rootCmd.Execute(); err != nil {
 		log.WithFields(log.Fields{
 			"error": err,
-		}).Fatal("unable to start the command")
+		}).Fatal("UNABLE TO RUN THE COMMAND")
 	}
 }

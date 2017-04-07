@@ -1,17 +1,19 @@
 package main
 
-// ProgramName contains this program name
+// ProgramName defines this application name
 const ProgramName = "natsping"
 
-// ProgramVersion contains this program version
-// This is automatically populated by the Makefile using the value from the VERSION file
+// ProgramVersion set this application version
+// This is supposed to be automatically populated by the Makefile using the value from the VERSION file
+// (-ldflags '-X main.ProgramVersion=$(shell cat VERSION)')
 var ProgramVersion = "0.0.0"
 
 // ProgramRelease contains this program release number (or build number)
 // This is automatically populated by the Makefile using the value from the RELEASE file
+// (-ldflags '-X main.ProgramRelease=$(shell cat RELEASE)')
 var ProgramRelease = "0"
 
-// ConfigPath list the local paths where to look for configuration files (in order)
+// ConfigPath list the paths where to look for configuration files (in order)
 var ConfigPath = [...]string{
 	"../resources/test/etc/" + ProgramName + "/",
 	"./",
@@ -26,10 +28,10 @@ const RemoteConfigProvider = ""
 // RemoteConfigEndpoint is the remote configuration URL (ip:port)
 const RemoteConfigEndpoint = ""
 
-// RemoteConfigPath is the remote configuration path where to search fo the configuration file ("/config/natsping")
+// RemoteConfigPath is the remote configuration path where to search fo the configuration file ("/config/srv-idp")
 const RemoteConfigPath = ""
 
-// RemoteConfigSecretKeyring is the path to the openpgp secret keyring used to decript the remote configuration data ("/etc/natsping/configkey.gpg")
+// RemoteConfigSecretKeyring is the path to the openpgp secret keyring used to decript the remote configuration data ("/etc/srv-idp/configkey.gpg")
 const RemoteConfigSecretKeyring = "" // #nosec
 
 // Log (syslog)
@@ -45,6 +47,3 @@ const LogAddress = ""
 
 // NatsAddress is the default NATS bus address
 const NatsAddress = "nats://127.0.0.1:4222"
-
-// BusTimeout is the default NATS bus connection timeout in seconds
-const BusTimeout = 1
