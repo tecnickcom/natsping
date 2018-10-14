@@ -2,20 +2,20 @@
 
 *NATS Bus Test Component*
 
-[![Master Branch](https://img.shields.io/badge/-master:-gray.svg)](https://github.com/miracl/natsping/tree/master)
-[![Master Build Status](https://secure.travis-ci.org/miracl/natsping.png?branch=master)](https://travis-ci.org/miracl/natsping?branch=master)
-[![Master Coverage Status](https://coveralls.io/repos/miracl/natsping/badge.svg?branch=master&service=github)](https://coveralls.io/github/miracl/natsping?branch=master)
+[![Master Branch](https://img.shields.io/badge/-master:-gray.svg)](https://github.com/tecnickcom/natsping/tree/master)
+[![Master Build Status](https://secure.travis-ci.org/tecnickcom/natsping.png?branch=master)](https://travis-ci.org/tecnickcom/natsping?branch=master)
+[![Master Coverage Status](https://coveralls.io/repos/tecnickcom/natsping/badge.svg?branch=master&service=github)](https://coveralls.io/github/tecnickcom/natsping?branch=master)
 
-[![Develop Branch](https://img.shields.io/badge/-develop:-gray.svg)](https://github.com/miracl/natsping/tree/develop)
-[![Develop Build Status](https://secure.travis-ci.org/miracl/natsping.png?branch=develop)](https://travis-ci.org/miracl/natsping?branch=develop)
-[![Develop Coverage Status](https://coveralls.io/repos/miracl/natsping/badge.svg?branch=develop&service=github)](https://coveralls.io/github/miracl/natsping?branch=develop)
-[![Go Report Card](https://goreportcard.com/badge/github.com/miracl/natsping)](https://goreportcard.com/report/github.com/miracl/natsping)
+[![Develop Branch](https://img.shields.io/badge/-develop:-gray.svg)](https://github.com/tecnickcom/natsping/tree/develop)
+[![Develop Build Status](https://secure.travis-ci.org/tecnickcom/natsping.png?branch=develop)](https://travis-ci.org/tecnickcom/natsping?branch=develop)
+[![Develop Coverage Status](https://coveralls.io/repos/tecnickcom/natsping/badge.svg?branch=develop&service=github)](https://coveralls.io/github/tecnickcom/natsping?branch=develop)
+[![Go Report Card](https://goreportcard.com/badge/github.com/tecnickcom/natsping)](https://goreportcard.com/report/github.com/tecnickcom/natsping)
 
 * **category**:    Tool
 * **author**:      Nicola Asuni <info@tecnick.com>
 * **copyright**:   2016-2017 MIRACL UK LTD
 * **license**:     ASL 2.0 - http://www.apache.org/licenses/LICENSE-2.0
-* **link**:        https://github.com/miracl/natsping
+* **link**:        https://github.com/tecnickcom/natsping
 
 ## Description
 
@@ -75,17 +75,17 @@ make format
 
 To manually create the container you can execute:
 ```
-docker build --tag="miracl/natspingdev" .
+docker build --tag="tecnickcom/natspingdev" .
 ```
 
 To log into the newly created container:
 ```
-docker run -t -i miracl/natspingdev /bin/bash
+docker run -t -i tecnickcom/natspingdev /bin/bash
 ```
 
 To get the container ID:
 ```
-CONTAINER_ID=`docker ps -a | grep miracl/natspingdev | cut -c1-12`
+CONTAINER_ID=`docker ps -a | grep tecnickcom/natspingdev | cut -c1-12`
 ```
 
 To delete the newly created docker container:
@@ -95,7 +95,7 @@ docker rm -f $CONTAINER_ID
 
 To delete the docker image:
 ```
-docker rmi -f miracl/natspingdev
+docker rmi -f tecnickcom/natspingdev
 ```
 
 To delete all containers
