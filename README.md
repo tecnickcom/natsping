@@ -5,10 +5,6 @@
 [![Master Branch](https://img.shields.io/badge/-master:-gray.svg)](https://github.com/tecnickcom/natsping/tree/master)
 [![Master Build Status](https://secure.travis-ci.org/tecnickcom/natsping.png?branch=master)](https://travis-ci.org/tecnickcom/natsping?branch=master)
 [![Master Coverage Status](https://coveralls.io/repos/tecnickcom/natsping/badge.svg?branch=master&service=github)](https://coveralls.io/github/tecnickcom/natsping?branch=master)
-
-[![Develop Branch](https://img.shields.io/badge/-develop:-gray.svg)](https://github.com/tecnickcom/natsping/tree/develop)
-[![Develop Build Status](https://secure.travis-ci.org/tecnickcom/natsping.png?branch=develop)](https://travis-ci.org/tecnickcom/natsping?branch=develop)
-[![Develop Coverage Status](https://coveralls.io/repos/tecnickcom/natsping/badge.svg?branch=develop&service=github)](https://coveralls.io/github/tecnickcom/natsping?branch=develop)
 [![Go Report Card](https://goreportcard.com/badge/github.com/tecnickcom/natsping)](https://goreportcard.com/report/github.com/tecnickcom/natsping)
 
 * **category**:    Tool
