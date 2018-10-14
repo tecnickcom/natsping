@@ -40,5 +40,5 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_configpath}*
 
 %changelog
-* Thu Jul 28 2016 Nicola Asuni <nicola.asuni@miracl.com> 1.0.0-1
+* Thu Jul 28 2016 Nicola Asuni <info@tecnick.com> 1.0.0-1
 - Initial Commit
